@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { features } from '@/data/phases';
+import TextReveal from './TextReveal';
 
 export default function FeatureSection() {
   return (
@@ -13,8 +14,8 @@ export default function FeatureSection() {
               02 / PLATFORM FEATURES
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#F4F6F8] tracking-wide leading-[1.1] font-[var(--font-syne)]">
-            Everything in One Place
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-wide leading-[1.1] font-[var(--font-syne)]">
+            <TextReveal text="Everything in One Place" className="text-[#F4F6F8]" delay={0.1} />
           </h2>
         </div>
 

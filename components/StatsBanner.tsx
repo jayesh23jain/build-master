@@ -1,12 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import AnimatedCounter from './AnimatedCounter';
 
 const stats = [
-  { value: '2,400', suffix: '+', suffixColor: 'text-[#1FE0E4]', label: 'ACTIVE PROJECTS' },
-  { value: '98', suffix: '%', suffixColor: 'text-[#1FE0E4]', label: 'ON-TIME DELIVERY' },
-  { value: '840', suffix: '+', suffixColor: 'text-[#1FE0E4]', label: 'VERIFIED CONTRACTORS' },
-  { prefix: '$', value: '1.2', suffix: 'B', suffixColor: 'text-[#D911E3]', label: 'PROJECTS MANAGED', glow: true },
+  { value: 2400, suffix: '+', suffixColor: 'text-[#1FE0E4]', label: 'ACTIVE PROJECTS' },
+  { value: 98, suffix: '%', suffixColor: 'text-[#1FE0E4]', label: 'ON-TIME DELIVERY' },
+  { value: 840, suffix: '+', suffixColor: 'text-[#1FE0E4]', label: 'VERIFIED CONTRACTORS' },
+  { prefix: '$', value: 1.2, suffix: 'B', suffixColor: 'text-[#D911E3]', label: 'PROJECTS MANAGED', glow: true },
 ];
 
 export default function StatsBanner() {
@@ -28,9 +29,15 @@ export default function StatsBanner() {
             )}
 
             <div className="flex items-baseline justify-center whitespace-nowrap overflow-visible leading-none tracking-tighter">
-              <span className="text-[12vw] md:text-[4vw] lg:text-[3.5vw] font-black text-[#F4F6F8] transform md:scale-x-[1.2]">
-                {stat.prefix}{stat.value}
-              </span>
+              <AnimatedCounter
+                from={0}
+                to={stat.value}
+                duration={2}
+                delay={i * 0.1}
+                prefix={stat.prefix}
+                suffix={stat.suffix}
+                className={`text-[12vw] md:text-[4vw] lg:text-[3.5vw] font-black transform md:scale-x-[1.2] ${i === stats.length - 1 ? 'text-[#F4F6F8]' : 'text-[#F4F6F8]'}`}
+              />
               <span className={`text-[12vw] md:text-[4vw] lg:text-[3.5vw] font-black transform md:scale-x-[1.2] ml-1 md:ml-2 ${stat.suffixColor}`}>
                 {stat.suffix}
               </span>

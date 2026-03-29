@@ -1,5 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
+import TextReveal from './TextReveal';
+import EnhancedButton from './EnhancedButton';
 
 export default function FinalCTA() {
   return (
@@ -16,16 +18,11 @@ export default function FinalCTA() {
           </div>
         </div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: false }} 
-          className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F4F6F8] mb-6 tracking-tight leading-[1.1] font-[var(--font-syne)] drop-shadow-[0_0_30px_rgba(31,224,228,0.3)]"
-        >
-          Ready to<br />
-          <span className="text-[#1FE0E4]">Break</span><br />
-          <span className="text-[#D911E3]">Ground?</span>
-        </motion.h2>
+        <div className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[1.1] font-[var(--font-syne)] drop-shadow-[0_0_30px_rgba(31,224,228,0.3)]">
+          <TextReveal text="Ready to" className="text-[#F4F6F8] block" delay={0.1} />
+          <TextReveal text="Break" className="text-[#1FE0E4] block" delay={0.15} />
+          <TextReveal text="Ground?" className="text-[#D911E3] block" delay={0.2} />
+        </div>
 
         <motion.p 
           initial={{ opacity: 0 }} 
@@ -37,13 +34,16 @@ export default function FinalCTA() {
           Join thousands of project managers and homeowners building smarter with Build Master.
         </motion.p>
 
-        <motion.button 
-          whileHover={{ scale: 1.02 }} 
-          whileTap={{ scale: 0.98 }} 
-          className="px-10 py-4 bg-[#1FE0E4] text-[#050505] font-bold text-sm uppercase tracking-[0.2em] font-['JetBrains_Mono'] transition-all duration-300 hover:bg-[#00D9E0] cursor-pointer"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          viewport={{ once: false }}
         >
-          Create Free Account
-        </motion.button>
+          <EnhancedButton variant="primary" size="lg">
+            Create Free Account
+          </EnhancedButton>
+        </motion.div>
       </div>
     </section>
   );

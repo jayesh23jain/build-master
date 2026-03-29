@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import PhaseCard from './PhaseCard';
+import TextReveal from './TextReveal';
 import { buildPhases } from '@/data/phases';
 
 export default function PhaseShowcase() {
@@ -13,8 +14,8 @@ export default function PhaseShowcase() {
               01 / CONSTRUCTION PHASES
             </span>
           </div>
-          <h2 className="text-4xl md:text-6xl lg:text-[4.5rem] font-medium text-[#F4F6F8] tracking-wide leading-[1.1] font-[var(--font-syne)] mb-6">
-            Manage Every Stage
+          <h2 className="text-4xl md:text-6xl lg:text-[4.5rem] font-medium tracking-wide leading-[1.1] font-[var(--font-syne)] mb-6">
+            <TextReveal text="Manage Every Stage" className="text-[#F4F6F8]" delay={0.1} />
           </h2>
           <p className="text-[#889EAA] text-sm md:text-base max-w-2xl leading-relaxed tracking-wide">
             From ground-breaking to final walkthrough — every phase tracked, every vendor vetted.
