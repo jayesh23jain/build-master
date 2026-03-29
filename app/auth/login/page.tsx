@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import FeatureAnimation from '@/components/FeatureAnimation';
@@ -8,6 +9,7 @@ import EnhancedButton from '@/components/EnhancedButton';
 type UserType = 'customer' | 'vendor';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [userType, setUserType] = useState<UserType | null>(null);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -22,7 +24,21 @@ export default function LoginPage() {
     setTimeout(() => {
       setLoading(false);
       const role = userType === 'customer' ? 'customer' : 'vendor';
-      alert(isLogin ? `Login successful as ${role}!` : `Account created successfully as ${role}!`);
+      
+      // Check user type and redirect accordingly
+      if (userType === 'customer' && isLogin) {
+        // Redirect customer to dashboard
+        router.push('/dashboard');
+      } else if (userType === 'customer' && !isLogin) {
+        // Redirect new customer to dashboard
+        router.push('/dashboard');
+      } else if (userType === 'vendor' && isLogin) {
+        // Redirect vendor to vendor dashboard (you can create this later)
+        router.push('/vendor-dashboard');
+      } else {
+        // New vendor registration
+        router.push('/vendor-dashboard');
+      }
     }, 1500);
   };
 
