@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface Activity {
   id: number;
@@ -15,6 +16,12 @@ interface RecentActivityProps {
 }
 
 export default function RecentActivity({ activities }: RecentActivityProps) {
+  const [activeTab, setActiveTab] = useState<string>('updates');
+
+  const handleViewAll = () => {
+    alert('Opening full Activity Log...');
+    console.log('View All clicked');
+  };
   const getActivityIcon = (type: string) => {
     const icons: Record<string, string> = {
       quote: '📮',
@@ -47,18 +54,28 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-2 flex-wrap">
           <motion.button
+            onClick={() => setActiveTab('updates')}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+            className={`px-3 py-1 border text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded transition-all ${
+              activeTab === 'updates'
+                ? 'border-[#1FE0E4] text-[#F4F6F8] bg-[#1FE0E4]/20'
+                : 'border-[#1FE0E4]/40 text-[#1FE0E4] hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10'
+            }`}
           >
             Updates
           </motion.button>
           <motion.button
+            onClick={() => setActiveTab('activity')}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+            className={`px-3 py-1 border text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded transition-all ${
+              activeTab === 'activity'
+                ? 'border-[#1FE0E4] text-[#F4F6F8] bg-[#1FE0E4]/20'
+                : 'border-[#1FE0E4]/40 text-[#1FE0E4] hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10'
+            }`}
           >
             Activity
           </motion.button>
@@ -123,9 +140,10 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
       <div className="flex items-center justify-between pt-3 border-t border-[#334155]/30">
         <p className="text-[#889EAA] text-xs font-['JetBrains_Mono']">{activities.length} Activities</p>
         <motion.button
+          onClick={handleViewAll}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-3 py-1 border border-[#1FE0E4] text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:bg-[#1FE0E4]/10 transition-all"
+          className="px-3 py-1 border border-[#1FE0E4] text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:bg-[#1FE0E4]/10 hover:shadow-lg hover:shadow-[#1FE0E4]/20 transition-all"
         >
           View All
         </motion.button>

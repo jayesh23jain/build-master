@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface ProjectOverviewProps {
   data: {
@@ -10,8 +11,15 @@ interface ProjectOverviewProps {
 }
 
 export default function ProjectOverview({ data }: ProjectOverviewProps) {
+  const [activeFilter, setActiveFilter] = useState<string>('budget');
+  
   const remaining = data.totalBudget - data.totalSpent;
   const spentPercentage = (data.totalSpent / data.totalBudget) * 100;
+
+  const handleAdjustBudget = () => {
+    alert('Opening Budget Adjustment dialog...');
+    console.log('Adjust Budget clicked');
+  };
 
   return (
     <motion.div
@@ -25,18 +33,28 @@ export default function ProjectOverview({ data }: ProjectOverviewProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-2 flex-wrap">
           <motion.button
+            onClick={() => setActiveFilter('budget')}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+            className={`px-3 py-1 border text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded transition-all ${
+              activeFilter === 'budget'
+                ? 'border-[#1FE0E4] text-[#F4F6F8] bg-[#1FE0E4]/20'
+                : 'border-[#1FE0E4]/40 text-[#1FE0E4] hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10'
+            }`}
           >
             Budget
           </motion.button>
           <motion.button
+            onClick={() => setActiveFilter('active')}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+            className={`px-3 py-1 border text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded transition-all ${
+              activeFilter === 'active'
+                ? 'border-[#1FE0E4] text-[#F4F6F8] bg-[#1FE0E4]/20'
+                : 'border-[#1FE0E4]/40 text-[#1FE0E4] hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10'
+            }`}
           >
             Active
           </motion.button>
@@ -112,9 +130,10 @@ export default function ProjectOverview({ data }: ProjectOverviewProps) {
 
         {/* Action Button */}
         <motion.button
+          onClick={handleAdjustBudget}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-3 py-1 border border-[#1FE0E4] text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:bg-[#1FE0E4]/10 transition-all"
+          className="px-3 py-1 border border-[#1FE0E4] text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:bg-[#1FE0E4]/10 hover:shadow-lg hover:shadow-[#1FE0E4]/20 transition-all"
         >
           Adjust
         </motion.button>
