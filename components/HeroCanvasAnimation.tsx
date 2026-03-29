@@ -52,23 +52,34 @@ export default function HeroCanvasAnimation() {
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // Set canvas size once
-    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // Enable image smoothing
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // Handle high-DPI displays
+    const dpr = window.devicePixelRatio || 1;
+    const canvasWidth = window.innerWidth * dpr;
+    const canvasHeight = window.innerHeight * dpr;
+
+    if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
     }
 
     const renderFrame = () => {
       const currentFrame = Math.round(frameIndex.get());
       const img = images[Math.max(0, Math.min(currentFrame, TOTAL_FRAMES - 1))];
       if (img && img.src) {
-        const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-        const x = (canvas.width - img.width * scale) / 2;
-        const y = (canvas.height - img.height * scale) / 2;
+        const scale = Math.max(window.innerWidth / img.width, window.innerHeight / img.height);
+        const x = (window.innerWidth - img.width * scale) / 2;
+        const y = (window.innerHeight - img.height * scale) / 2;
         ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
       } else {
         ctx.fillStyle = '#050505';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       }
     };
 
@@ -78,8 +89,12 @@ export default function HeroCanvasAnimation() {
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const newDpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * newDpr;
+        canvas.height = window.innerHeight * newDpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.scale(newDpr, newDpr);
         renderFrame();
       }, 100);
     };
@@ -136,7 +151,7 @@ export default function HeroCanvasAnimation() {
       <div ref={containerRef} className="relative h-[800vh] w-full">
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#050505] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
         <motion.div style={{ y: yOffset }} className="w-full h-full opacity-85">
-          <canvas ref={canvasRef} className="w-full h-full object-cover" />
+          <canvas ref={canvasRef} className="w-full h-full object-cover filter blur-[0.5px]" style={{ imageRendering: 'auto' }} />
         </motion.div>
         
         {/* Blending Gradient Overlay */}
