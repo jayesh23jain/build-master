@@ -1,5 +1,6 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { motion, useScroll, useTransform, useSpring, useVelocity } from 'framer-motion';
 
 const TOTAL_FRAMES = 120; // Adjust based on your frame count
@@ -279,13 +280,15 @@ export default function HeroCanvasAnimation() {
               Join 2,400+ project managers building smarter today.
             </p>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 bg-gradient-to-r from-[#0891B2] to-[#2DE2E6] text-[#050505] font-['JetBrains_Mono'] tracking-[0.2em] uppercase text-[0.6rem] md:text-xs font-bold pointer-events-auto transition-all hover:shadow-[0_0_30px_rgba(45,226,230,0.4)]"
-            >
-              START BUILDING →
-            </motion.button>
+            <Link href="/auth/login">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-10 py-4 bg-gradient-to-r from-[#0891B2] to-[#2DE2E6] text-[#050505] font-['JetBrains_Mono'] tracking-[0.2em] uppercase text-[0.6rem] md:text-xs font-bold pointer-events-auto transition-all hover:shadow-[0_0_30px_rgba(45,226,230,0.4)] cursor-pointer"
+              >
+                START BUILDING →
+              </motion.div>
+            </Link>
           </motion.div>
         </div>
 

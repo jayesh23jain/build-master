@@ -40,7 +40,7 @@ export default function FinalCTA() {
           transition={{ delay: 0.3 }}
           viewport={{ once: false }}
         >
-          <EnhancedButton variant="primary" size="lg">
+          <EnhancedButton variant="primary" size="lg" href="/auth/login">
             Create Free Account
           </EnhancedButton>
         </motion.div>

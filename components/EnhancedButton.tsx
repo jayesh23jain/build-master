@@ -2,12 +2,14 @@
 
 import { motion } from 'framer-motion';
 import React from 'react';
+import Link from 'next/link';
 
 interface EnhancedButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'sm' | 'md' | 'lg';
   onClick?: () => void;
+  href?: string;
   className?: string;
 }
 
@@ -16,6 +18,7 @@ export default function EnhancedButton({
   variant = 'primary',
   size = 'md',
   onClick,
+  href,
   className = '',
 }: EnhancedButtonProps) {
   const baseStyles = 'font-bold tracking-[0.2em] font-[\'JetBrains_Mono\'] uppercase transition-all duration-300 relative overflow-hidden group';
@@ -32,13 +35,10 @@ export default function EnhancedButton({
     lg: 'text-[12px]',
   };
 
-  return (
-    <motion.button
-      onClick={onClick}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
+  const buttonClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+
+  const shineContent = (
+    <>
       {/* Shine effect background */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20"
@@ -66,6 +66,31 @@ export default function EnhancedButton({
       >
         {children}
       </motion.span>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className="inline-block">
+        <motion.div
+          className={buttonClasses}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          {shineContent}
+        </motion.div>
+      </Link>
+    );
+  }
+
+  return (
+    <motion.button
+      onClick={onClick}
+      className={buttonClasses}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {shineContent}
     </motion.button>
   );
 }
