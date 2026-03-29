@@ -40,42 +40,98 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35 }}
-      className="bg-gradient-to-br from-[#1a1f2e] to-[#0d0f14] border border-[#334155]/30 rounded-2xl p-6"
+      className="bg-gradient-to-br from-[#1a1f2e] to-[#0d0f14] border border-[#334155]/30 rounded-2xl p-6 hover:border-[#1FE0E4]/50 hover:shadow-lg hover:shadow-[#1FE0E4]/10 transition-all duration-300"
     >
-      <h2 className="text-xl font-bold text-[#F4F6F8] mb-6">Recent Activity</h2>
-      <div className="space-y-3">
-        {activities.map((activity, idx) => (
+      {/* Top Tags */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-2 flex-wrap">
+          <motion.button
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+          >
+            Updates
+          </motion.button>
+          <motion.button
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="px-3 py-1 border border-[#1FE0E4]/40 text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:border-[#1FE0E4]/70 hover:bg-[#1FE0E4]/10 transition-all"
+          >
+            Activity
+          </motion.button>
+        </div>
+        <div className="flex items-center gap-2 text-[#1FE0E4] font-['JetBrains_Mono'] text-sm">
+          <span>★</span>
+          <span>{activities.length}</span>
+        </div>
+      </div>
+
+      {/* Grid Background Section */}
+      <div className="relative mb-6 rounded-lg overflow-hidden">
+        <div className="absolute inset-0">
+          <svg className="w-full h-full opacity-15" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid3" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1FE0E4" strokeWidth="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid3)" />
+          </svg>
+        </div>
+        <div className="relative z-10 h-32 flex items-center justify-center">
+          <p className="text-[#889EAA] font-['JetBrains_Mono'] text-xs uppercase tracking-widest">Recent Updates</p>
+        </div>
+      </div>
+
+      {/* Title and Description */}
+      <div className="mb-4">
+        <h3 className="text-lg font-bold text-[#F4F6F8] mb-1">Activity Log</h3>
+        <p className="text-[#889EAA] text-xs">
+          Track all recent project updates and activities
+        </p>
+      </div>
+
+      {/* Activities List */}
+      <div className="space-y-2 mb-4 max-h-32 overflow-y-auto">
+        {activities.slice(0, 3).map((activity, idx) => (
           <motion.div
             key={activity.id}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35 + idx * 0.08 }}
-            className="p-4 bg-[#0d0f14]/50 border border-[#334155]/20 rounded-lg hover:border-[#1FE0E4]/30 transition-all group"
+            transition={{ delay: 0.35 + idx * 0.05 }}
+            className="p-2 bg-[#0d0f14]/50 border border-[#334155]/20 rounded hover:border-[#1FE0E4]/30 transition-all group"
           >
-            <div className="flex items-start gap-4">
-              <div className={`text-2xl flex-shrink-0 w-10 h-10 bg-gradient-to-br ${getActivityColor(activity.type)} to-black/40 rounded-lg flex items-center justify-center`}>
+            <div className="flex items-start gap-2">
+              <div className={`text-sm flex-shrink-0 w-6 h-6 bg-gradient-to-br ${getActivityColor(activity.type)} to-black/40 rounded flex items-center justify-center`}>
                 {getActivityIcon(activity.type)}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-[#F4F6F8] group-hover:text-[#1FE0E4] transition-colors">
+                <p className="text-xs font-semibold text-[#F4F6F8] group-hover:text-[#1FE0E4] transition-colors">
                   {activity.title}
-                </h3>
-                <p className="text-xs text-[#889EAA] mt-1">{activity.description}</p>
-                <p className="text-xs text-[#334155] mt-2">{activity.time}</p>
-              </div>
-              <div className="flex-shrink-0">
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  activity.status === 'completed' ? 'bg-[#10b981]/20 text-[#10b981]' :
-                  activity.status === 'pending' ? 'bg-[#f59e0b]/20 text-[#f59e0b]' :
-                  'bg-[#1FE0E4]/20 text-[#1FE0E4]'
-                }`}>
-                  {activity.status}
-                </span>
+                </p>
+                <p className="text-xs text-[#889EAA]">{activity.time}</p>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Bottom Section */}
+      <div className="flex items-center justify-between pt-3 border-t border-[#334155]/30">
+        <p className="text-[#889EAA] text-xs font-['JetBrains_Mono']">{activities.length} Activities</p>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-3 py-1 border border-[#1FE0E4] text-[#1FE0E4] text-xs font-['JetBrains_Mono'] uppercase tracking-widest rounded hover:bg-[#1FE0E4]/10 transition-all"
+        >
+          View All
+        </motion.button>
+      </div>
+
+      {/* Bottom Gradient Bar */}
+      <div className="mt-3 h-1 bg-gradient-to-r from-[#1FE0E4] via-[#D911E3] to-transparent rounded-full"></div>
     </motion.div>
   );
 }

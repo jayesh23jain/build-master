@@ -15,13 +15,15 @@ interface StatCardsProps {
 
 export default function StatCards({ data }: StatCardsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Auto-expand on page load
   useEffect(() => {
-    // Small delay to ensure smooth animation on load
+    setIsMounted(true);
+    // Expand cards after page has fully loaded
     const timer = setTimeout(() => {
       setIsExpanded(true);
-    }, 300);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 

@@ -34,7 +34,7 @@ export default function Sidebar() {
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed left-0 top-0 h-screen w-80 bg-gradient-to-b from-[#1a1f2e] to-[#0d0f14] border-r border-[#334155]/30 pt-20 overflow-hidden lg:relative lg:translate-x-0 lg:h-auto z-30 lg:z-0"
+        className="fixed left-0 top-0 h-screen w-80 bg-gradient-to-b from-[#0d0f14] via-[#0a0c10] to-[#050507] border-r border-[#334155]/30 pt-20 overflow-hidden lg:relative lg:translate-x-0 lg:h-auto z-30 lg:z-0 flex flex-col"
       >
         {/* Sidebar Header */}
         <div className="px-6 py-4 border-b border-[#334155]/30 mb-6">

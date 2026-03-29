@@ -44,7 +44,7 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0d0f14] text-[#F4F6F8]">
+    <div className="min-h-screen bg-gradient-to-b from-[#0d0f14] to-[#0a0c10] text-[#F4F6F8]">
       {/* Navigation Bar */}
       <nav className="border-b border-[#334155]/30 bg-[#0d0f14]/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -65,7 +65,7 @@ export default function DashboardPage() {
         <Sidebar />
 
         {/* Main Content */}
-        <main className="flex-1 px-6 py-8 lg:ml-0">
+        <main className="flex-1 px-6 py-8 lg:ml-0 bg-gradient-to-b from-[#0d0f14] via-[#0a0c10] to-[#050507]">
           <div className="max-w-6xl">
             {/* Header with Welcome Message */}
             <DashboardHeader userName="John Doe" />
@@ -74,13 +74,13 @@ export default function DashboardPage() {
             <StatCards data={dashboardData} />
 
             {/* Main Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-              {/* Left Column - Budget Tracker */}
-              <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 gap-6 mt-8">
+              {/* Budget Tracker - Full Width */}
+              <div>
                 <BudgetTracker data={dashboardData} />
               </div>
 
-              {/* Right Column - Project Overview */}
+              {/* Project Overview - Below, aligned properly */}
               <div>
                 <ProjectOverview data={dashboardData} />
               </div>
