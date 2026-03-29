@@ -18,7 +18,7 @@ export default function FinalCTA() {
           </div>
         </div>
 
-        <div className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[1.1] font-[var(--font-syne)] drop-shadow-[0_0_30px_rgba(31,224,228,0.3)]">
+        <div className="text-5xl md:text-7xl lg:text-8xl mb-6 tracking-tight leading-[1.1] drop-shadow-[0_0_30px_rgba(31,224,228,0.3)] quintessential">
           <TextReveal text="Ready to" className="text-[#F4F6F8] block" delay={0.1} />
           <TextReveal text="Break" className="text-[#1FE0E4] block" delay={0.15} />
           <TextReveal text="Ground?" className="text-[#D911E3] block" delay={0.2} />

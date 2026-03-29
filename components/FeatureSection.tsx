@@ -14,7 +14,7 @@ export default function FeatureSection() {
               02 / PLATFORM FEATURES
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-wide leading-[1.1] font-[var(--font-syne)]">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl tracking-wide leading-[1.1] quintessential">
             <TextReveal text="Everything in One Place" className="text-[#F4F6F8]" delay={0.1} />
           </h2>
         </div>

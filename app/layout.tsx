@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono, Syne } from 'next/font/google';
+import { Inter, JetBrains_Mono, Syne, Quintessential } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 const inter = Inter({
@@ -17,6 +17,12 @@ const syne = Syne({
   variable: '--font-syne'
 });
 
+const quintessential = Quintessential({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-quintessential'
+});
+
 export const metadata: Metadata = {
   title: 'Build Master | Manage your entire build. One platform.',
   description: 'The A-Z home builder platform. Connect with vendors, manage phases, and track your construction project.',
@@ -24,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${syne.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${syne.variable} ${quintessential.variable}`}>
       <body>
         <Navbar />
         {children}

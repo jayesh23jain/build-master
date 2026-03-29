@@ -140,7 +140,7 @@ export default function HeroCanvasAnimation() {
                 Construction Management Platform
               </span>
             </div>
-            <div className="flex flex-col items-start leading-[0.85] md:leading-[0.8] tracking-tight mb-8 md:mb-10 w-full font-[var(--font-syne)]">
+            <div className="flex flex-col items-start leading-[0.85] md:leading-[0.8] tracking-tight mb-8 md:mb-10 w-full quintessential">
               <h1 className="text-[20vw] md:text-[10vw] lg:text-[8vw] font-black text-[#F4F6F8]">
                 Build
               </h1>
@@ -161,7 +161,7 @@ export default function HeroCanvasAnimation() {
               </span>
             </div>
 
-            <div className="flex flex-col items-start leading-[0.9] tracking-tight mb-8 w-full font-[var(--font-syne)]">
+            <div className="flex flex-col items-start leading-[0.9] tracking-tight mb-8 w-full quintessential">
               <h1 className="text-[10vw] md:text-[6vw] lg:text-[5vw] font-bold md:font-extrabold text-[#F4F6F8]">
                 From <span className="text-[#86198F]">Blueprint</span>
               </h1>
@@ -201,7 +201,7 @@ export default function HeroCanvasAnimation() {
               </span>
             </div>
 
-            <div className="flex flex-col items-end leading-[0.9] tracking-tight mb-8 w-full font-[var(--font-syne)]">
+            <div className="flex flex-col items-end leading-[0.9] tracking-tight mb-8 w-full quintessential">
               <h1 className="text-[10vw] md:text-[6vw] lg:text-[5vw] font-bold md:font-extrabold text-[#EA580C]">
                 Engineering
               </h1>
@@ -241,7 +241,7 @@ export default function HeroCanvasAnimation() {
               </span>
             </div>
 
-            <div className="flex flex-col items-center leading-[0.9] tracking-tight mb-8 w-full font-[var(--font-syne)]">
+            <div className="flex flex-col items-center leading-[0.9] tracking-tight mb-8 w-full quintessential">
               <h1 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-bold md:font-extrabold text-[#F4F6F8]">
                 Ready to Break
               </h1>
