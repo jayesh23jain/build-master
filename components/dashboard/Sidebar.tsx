@@ -9,15 +9,14 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   const navItems = [
-    { label: 'Dashboard', href: '/dashboard', icon: '📊' },
-    { label: 'Find Vendors', href: '/marketplace', icon: '🏪' },
-    { label: 'My Quotes', href: '/my-quotes', icon: '📮' },
-    { label: 'Mood-Board', href: '/moodboard', icon: '🎨' },
-    { label: 'Document Vault', href: '/vault', icon: '📁' },
-    { label: 'Estimator', href: '/calculator', icon: '🧮' },
-    { label: 'Material Prices', href: '/price-check', icon: '💰' },
-    { label: 'Budget Tracker', href: '/budget', icon: '📈' },
-    { label: '3D Studio', href: '/design-studio', icon: '🎭' },
+    { label: 'Dashboard', href: '/dashboard', icon: '📊', desc: 'Overview & metrics' },
+    { label: 'Find Vendors', href: '/marketplace', icon: '🏪', desc: 'Browse vendors' },
+    { label: 'My Quotes', href: '/my-quotes', icon: '📮', desc: 'View quotes' },
+    { label: 'Mood-Board', href: '/moodboard', icon: '🎨', desc: 'Design ideas' },
+    { label: 'Document Vault', href: '/vault', icon: '📁', desc: 'Safe storage' },
+    { label: 'Estimator', href: '/calculator', icon: '🧮', desc: 'Cost calculator' },
+    { label: 'Material Prices', href: '/price-check', icon: '💰', desc: 'Market rates' },
+    { label: 'Budget Tracker', href: '/budget', icon: '📈', desc: 'Track spending' },
   ];
 
   return (
@@ -35,7 +34,7 @@ export default function Sidebar() {
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed left-0 top-0 h-screen w-80 bg-gradient-to-b from-[#1a1f2e] to-[#0d0f14] border-r border-[#334155]/30 pt-20 overflow-y-auto lg:relative lg:translate-x-0 z-30 lg:z-0"
+        className="fixed left-0 top-0 h-screen w-80 bg-gradient-to-b from-[#1a1f2e] to-[#0d0f14] border-r border-[#334155]/30 pt-20 overflow-hidden lg:relative lg:translate-x-0 lg:h-auto z-30 lg:z-0"
       >
         {/* Sidebar Header */}
         <div className="px-6 py-4 border-b border-[#334155]/30 mb-6">
@@ -46,7 +45,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="px-4 space-y-2">
+        <nav className="px-3 space-y-3">
           {navItems.map((item, idx) => {
             const isActive = pathname === item.href;
             return (
@@ -59,29 +58,32 @@ export default function Sidebar() {
                 <Link
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-lg transition-all duration-300 flex items-center gap-3 ${
+                  className={`block px-4 py-4 rounded-lg transition-all duration-300 flex items-start gap-3 group ${
                     isActive
-                      ? 'bg-[#1FE0E4]/20 border border-[#1FE0E4] text-[#1FE0E4] shadow-lg shadow-[#1FE0E4]/10'
-                      : 'text-[#889EAA] hover:text-[#1FE0E4] hover:bg-[#1FE0E4]/10 border border-[#334155]/20'
+                      ? 'bg-[#1FE0E4]/20 border border-[#1FE0E4] shadow-lg shadow-[#1FE0E4]/10'
+                      : 'border border-[#334155]/20 hover:border-[#1FE0E4]/40 hover:bg-[#1FE0E4]/5'
                   }`}
                 >
-                  <span className="text-xl">{item.icon}</span>
-                  <span className="font-medium">{item.label}</span>
+                  <span className="text-2xl flex-shrink-0 mt-0.5">{item.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-semibold text-sm transition-colors ${
+                      isActive ? 'text-[#1FE0E4]' : 'text-[#F4F6F8] group-hover:text-[#1FE0E4]'
+                    }`}>
+                      {item.label}
+                    </p>
+                    <p className={`text-xs transition-colors ${
+                      isActive ? 'text-[#1FE0E4]/70' : 'text-[#889EAA] group-hover:text-[#889EAA]'
+                    }`}>
+                      {item.desc}
+                    </p>
+                  </div>
                 </Link>
               </motion.div>
             );
           })}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-[#334155]/30 bg-gradient-to-t from-[#0d0f14] to-transparent">
-          <div className="bg-[#1FE0E4]/10 border border-[#1FE0E4]/30 rounded-lg p-4 text-center">
-            <p className="text-sm text-[#889EAA] mb-2">Need Help?</p>
-            <button className="w-full px-3 py-2 bg-[#1FE0E4] text-[#050505] rounded-lg font-semibold text-sm hover:bg-[#00D9E0] transition-colors">
-              Support
-            </button>
-          </div>
-        </div>
+
       </motion.aside>
 
       {/* Overlay for mobile */}
