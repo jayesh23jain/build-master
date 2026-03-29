@@ -6,6 +6,7 @@ import PhaseShowcase from '@/components/PhaseShowcase';
 import FeatureSection from '@/components/FeatureSection';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export default function Home() {
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Home() {
 
   return (
     <main className="bg-transparent min-h-screen">
+      <Navbar />
       <HeroCanvasAnimation />
       <StatsBanner />
       <PhaseShowcase />

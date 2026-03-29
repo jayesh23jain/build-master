@@ -24,22 +24,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0d0f14] text-[#F4F6F8]">
-      {/* Navigation */}
-      <nav className="border-b border-[#334155]/30 bg-[#0d0f14]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="font-bold text-xl tracking-wider text-[#1FE0E4] font-['JetBrains_Mono']">
-            BUILD MASTER
-          </Link>
-          <Link
-            href="/"
-            className="text-[#889EAA] hover:text-[#1FE0E4] transition-colors text-sm font-['JetBrains_Mono']"
-          >
-            ← Back to Home
-          </Link>
-        </div>
-      </nav>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
         {/* Left Side - Feature Animation */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}

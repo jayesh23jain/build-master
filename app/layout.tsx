@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Syne, Quintessential } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter'
@@ -32,7 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${syne.variable} ${quintessential.variable}`}>
       <body>
-        <Navbar />
         {children}
       </body>
     </html>
