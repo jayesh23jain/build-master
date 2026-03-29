@@ -1,6 +1,7 @@
 'use client';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import MobileMenu from './MobileMenu';
 
 export default function Navbar() {
   const { scrollYProgress } = useScroll();
@@ -46,25 +47,28 @@ export default function Navbar() {
       </div>
       
       {/* Right CTA Button Wrapper */}
-      <div className="flex items-center justify-end pointer-events-auto w-auto md:w-[250px]">
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="border border-[#2563EB] bg-transparent backdrop-blur-sm px-6 py-2.5 text-[#F4F6F8] hover:bg-[#2563EB]/10 hover:border-[#3B82F6] text-[10px] font-bold uppercase tracking-[0.2em] font-['JetBrains_Mono'] transition-all duration-300 flex items-center gap-3 relative group overflow-hidden"
-        >
-          {/* Shine effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20"
-            initial={{ x: '-100%' }}
-            whileHover={{
-              x: '100%',
-              transition: { duration: 0.6, ease: 'easeInOut' },
-            }}
-          />
-          <span className="relative z-10">
-            START PROJECT <span className="text-[12px] leading-none ml-1">→</span>
-          </span>
-        </motion.button>
+      <div className="flex items-center justify-end pointer-events-auto w-auto md:w-[250px] gap-4">
+        <div className="hidden md:block">
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="border border-[#2563EB] bg-transparent backdrop-blur-sm px-6 py-2.5 text-[#F4F6F8] hover:bg-[#2563EB]/10 hover:border-[#3B82F6] text-[10px] font-bold uppercase tracking-[0.2em] font-['JetBrains_Mono'] transition-all duration-300 flex items-center gap-3 relative group overflow-hidden"
+          >
+            {/* Shine effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20"
+              initial={{ x: '-100%' }}
+              whileHover={{
+                x: '100%',
+                transition: { duration: 0.6, ease: 'easeInOut' },
+              }}
+            />
+            <span className="relative z-10">
+              START PROJECT <span className="text-[12px] leading-none ml-1">→</span>
+            </span>
+          </motion.button>
+        </div>
+        <MobileMenu />
       </div>
     </motion.nav>
   );

@@ -28,6 +28,7 @@ export default function FeatureSection() {
             <motion.div 
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02, y: -4 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: false, amount: 0.3 }}
               className="flex-1 flex flex-col p-8 md:p-12 border-b border-[#334155]/30 bg-[#0A0D14] hover:bg-[#111622] transition-colors duration-500 group relative">
@@ -42,6 +43,7 @@ export default function FeatureSection() {
             <motion.div 
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02, y: -4 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: false, amount: 0.3 }}
               className="flex-1 flex flex-col p-8 md:p-12 bg-[#0A0D14] border-b lg:border-b-0 border-[#334155]/30 hover:bg-[#111622] transition-colors duration-500 group relative">
@@ -58,6 +60,7 @@ export default function FeatureSection() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: false, amount: 0.3 }}
             className="flex flex-col lg:border-r border-[#334155]/30 items-center justify-center p-12 bg-[#0A0D14] border-b lg:border-b-0 hover:bg-[#111622] transition-colors duration-500">
@@ -80,6 +83,7 @@ export default function FeatureSection() {
             <motion.div 
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02, y: -4 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: false, amount: 0.3 }}
               className="flex-1 flex flex-col p-8 md:p-12 border-b border-[#334155]/30 bg-[#0A0D14] hover:bg-[#111622] transition-colors duration-500 group relative">
@@ -94,6 +98,7 @@ export default function FeatureSection() {
             <motion.div 
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02, y: -4 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: false, amount: 0.3 }}
               className="flex-1 flex flex-col p-8 md:p-12 bg-[#0A0D14] hover:bg-[#111622] transition-colors duration-500 group relative">

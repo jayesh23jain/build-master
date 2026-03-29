@@ -15,7 +15,11 @@ export default function PhaseCard({ phase, index, total = 3 }: PhaseCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
       viewport={{ once: false, amount: 0.3 }}
+      whileHover={{ scale: 1.03, y: -5 }}
       className={`group/card relative flex-1 flex flex-col p-6 md:p-10 border-b md:border-b-0 border-[#334155]/30 ${index < total - 1 ? 'md:border-r' : ''} bg-[#0A0D14] hover:bg-[#111622] transition-colors duration-500`}
+      style={{
+        boxShadow: 'none',
+      }}
     >
       
       {/* Animated Gradient Bottom Border on Hover */}
