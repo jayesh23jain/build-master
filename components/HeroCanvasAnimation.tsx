@@ -82,9 +82,16 @@ export default function HeroCanvasAnimation() {
   }, [imagesLoaded, images, frameIndex]);
 
   const section1Opacity = useTransform(smoothProgress, [0, 0.1, 0.2], [0, 1, 0]);
+  const section1X = useTransform(smoothProgress, [0, 0.1, 0.2], [-50, 0, -50]);
+  
   const section2Opacity = useTransform(smoothProgress, [0.2, 0.35, 0.5], [0, 1, 0]);
+  const section2X = useTransform(smoothProgress, [0.2, 0.35, 0.5], [-50, 0, -50]);
+  
   const section3Opacity = useTransform(smoothProgress, [0.5, 0.65, 0.8], [0, 1, 0]);
+  const section3X = useTransform(smoothProgress, [0.5, 0.65, 0.8], [50, 0, 50]);
+  
   const section4Opacity = useTransform(smoothProgress, [0.8, 0.95, 1], [0, 1, 1]);
+  const section4Y = useTransform(smoothProgress, [0.8, 0.95, 1], [30, 0, 0]);
   const scrollIndicatorOpacity = useTransform(smoothProgress, [0, 0.05], [1, 0]);
 
   return (
@@ -126,7 +133,7 @@ export default function HeroCanvasAnimation() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/20 to-[#050505] opacity-90 pointer-events-none" />
 
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <motion.div style={{ opacity: section1Opacity }} className="absolute w-full flex flex-col items-start justify-center text-left px-4 md:px-[5%] lg:px-[6%]">
+          <motion.div style={{ opacity: section1Opacity, x: section1X }} className="absolute w-full flex flex-col items-start justify-center text-left px-4 md:px-[5%] lg:px-[6%]">
             <div className="border border-[#1FE0E4]/30 px-4 py-1.5 mb-6 md:mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#1FE0E4] animate-pulse"></div>
               <span className="text-[#1FE0E4] text-[0.6rem] md:text-xs font-['JetBrains_Mono'] tracking-[0.2em] font-medium uppercase">
@@ -146,7 +153,7 @@ export default function HeroCanvasAnimation() {
             </p>
           </motion.div>
 
-          <motion.div style={{ opacity: section2Opacity }} className="absolute w-full flex flex-col items-start justify-center text-left px-4 md:px-[5%] lg:px-[6%]">
+          <motion.div style={{ opacity: section2Opacity, x: section2X }} className="absolute w-full flex flex-col items-start justify-center text-left px-4 md:px-[5%] lg:px-[6%]">
             <div className="border border-[#86198F]/50 px-4 py-1.5 mb-6 md:mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#86198F] animate-pulse"></div>
               <span className="text-[#86198F] text-[0.6rem] md:text-xs font-['JetBrains_Mono'] tracking-[0.2em] font-medium uppercase">
@@ -186,7 +193,7 @@ export default function HeroCanvasAnimation() {
             </div>
           </motion.div>
 
-          <motion.div style={{ opacity: section3Opacity }} className="absolute w-full flex flex-col items-end justify-center text-right px-4 md:px-[5%] lg:px-[6%]">
+          <motion.div style={{ opacity: section3Opacity, x: section3X }} className="absolute w-full flex flex-col items-end justify-center text-right px-4 md:px-[5%] lg:px-[6%]">
             <div className="border border-[#EA580C]/50 px-4 py-1.5 mb-6 md:mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#EA580C] animate-pulse"></div>
               <span className="text-[#EA580C] text-[0.6rem] md:text-xs font-['JetBrains_Mono'] tracking-[0.2em] font-medium uppercase">
@@ -226,7 +233,7 @@ export default function HeroCanvasAnimation() {
             </div>
           </motion.div>
 
-          <motion.div style={{ opacity: section4Opacity }} className="absolute w-full flex flex-col items-center justify-center text-center px-4">
+          <motion.div style={{ opacity: section4Opacity, y: section4Y }} className="absolute w-full flex flex-col items-center justify-center text-center px-4">
             <div className="border border-[#D911E3]/30 px-4 py-1.5 mb-6 md:mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#D911E3] animate-pulse"></div>
               <span className="text-[#D911E3] text-[0.6rem] md:text-xs font-['JetBrains_Mono'] tracking-[0.2em] font-medium uppercase">
