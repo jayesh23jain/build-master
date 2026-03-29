@@ -16,6 +16,7 @@ interface StatCardsProps {
 export default function StatCards({ data }: StatCardsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   // Auto-expand on page load
   useEffect(() => {
@@ -88,13 +89,23 @@ export default function StatCards({ data }: StatCardsProps) {
                   y: 0,
                   scale: scale,
                 }}
+                whileHover={{
+                  scale: scale * 1.08,
+                  y: -15,
+                }}
+                onHoverStart={() => setHoveredCard(idx)}
+                onHoverEnd={() => setHoveredCard(null)}
                 transition={{ 
                   type: 'spring', 
                   stiffness: 90, 
                   damping: 18,
                   mass: 1.1,
                 }}
-                className={`w-full h-full bg-gradient-to-br ${stat.color} to-black/40 p-6 rounded-2xl border border-[#334155]/30 hover:border-[#1FE0E4]/50 transition-all hover:shadow-2xl hover:shadow-[#1FE0E4]/20 flex flex-col justify-between backdrop-blur-sm cursor-pointer`}
+                className={`w-full h-full bg-gradient-to-br ${stat.color} to-black/40 p-6 rounded-2xl border transition-all flex flex-col justify-between backdrop-blur-sm cursor-pointer ${
+                  hoveredCard === idx
+                    ? 'border-[#1FE0E4] shadow-2xl shadow-[#1FE0E4]/30'
+                    : 'border-[#334155]/30 hover:border-[#1FE0E4]/50 hover:shadow-lg hover:shadow-[#1FE0E4]/20'
+                }`}
               >
                 <div>
                   <div className="flex items-start justify-between mb-4">

@@ -21,9 +21,10 @@ export default function BudgetTracker({ data }: BudgetTrackerProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.3 }}
+      transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
       className="bg-gradient-to-br from-[#1a1f2e] to-[#0d0f14] border border-[#334155]/30 rounded-2xl p-6 hover:border-[#1FE0E4]/50 hover:shadow-lg hover:shadow-[#1FE0E4]/10 transition-all duration-300"
     >
       {/* Top Tags */}
