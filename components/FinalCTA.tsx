@@ -19,7 +19,7 @@ export default function FinalCTA() {
         <motion.h2 
           initial={{ opacity: 0, y: 20 }} 
           whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
+          viewport={{ once: false }} 
           className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F4F6F8] mb-6 tracking-tight leading-[1.1] font-[var(--font-syne)] drop-shadow-[0_0_30px_rgba(31,224,228,0.3)]"
         >
           Ready to<br />
@@ -30,7 +30,7 @@ export default function FinalCTA() {
         <motion.p 
           initial={{ opacity: 0 }} 
           whileInView={{ opacity: 1 }} 
-          viewport={{ once: true }} 
+          viewport={{ once: false }} 
           transition={{ delay: 0.1 }} 
           className="text-[#889EAA] text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed"
         >

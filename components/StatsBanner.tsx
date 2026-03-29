@@ -14,8 +14,12 @@ export default function StatsBanner() {
     <section className="w-full bg-[#111520] border-y border-[#334155]/60 relative z-20 font-[var(--font-syne)] overflow-hidden">
       <div className="flex flex-col md:flex-row items-stretch w-full max-w-[2000px] mx-auto">
         {stats.map((stat, i) => (
-          <div
+          <motion.div
             key={i}
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+            viewport={{ once: false, amount: 0.5 }}
             className={`flex-1 flex flex-col items-center justify-center py-12 md:py-14 relative border-b md:border-b-0 md:border-r border-[#334155]/60 ${i === stats.length - 1 ? 'md:border-none' : ''}`}
           >
             {/* Top Glow bar for the last section */}
@@ -35,7 +39,7 @@ export default function StatsBanner() {
             <span className="mt-4 md:mt-6 text-[#889EAA] text-[8px] md:text-[9px] font-['JetBrains_Mono'] tracking-[0.25em] font-medium uppercase text-center">
               {stat.label}
             </span>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
