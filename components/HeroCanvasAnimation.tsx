@@ -17,9 +17,9 @@ export default function HeroCanvasAnimation() {
     offset: ['start start', 'end start']
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20, restDelta: 0.001 });
   const scrollVelocity = useVelocity(scrollYProgress);
-  const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [15, 0, -15]);
+  const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [10, 0, -10]);
   const frameIndex = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
 
   useEffect(() => {
@@ -49,26 +49,24 @@ export default function HeroCanvasAnimation() {
   useEffect(() => {
     if (!imagesLoaded || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
+
+    // Set canvas size once
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
     const renderFrame = () => {
       const currentFrame = Math.round(frameIndex.get());
       const img = images[Math.max(0, Math.min(currentFrame, TOTAL_FRAMES - 1))];
       if (img && img.src) {
-        // Adjust responsive dimensions if needed later on
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         const x = (canvas.width - img.width * scale) / 2;
         const y = (canvas.height - img.height * scale) / 2;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
       } else {
-        // Draw grid placeholder safely
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#050505';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
@@ -76,9 +74,21 @@ export default function HeroCanvasAnimation() {
 
     const unsubscribe = frameIndex.on('change', renderFrame);
     renderFrame();
-    const handleResize = () => renderFrame();
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        renderFrame();
+      }, 100);
+    };
     window.addEventListener('resize', handleResize);
-    return () => { unsubscribe(); window.removeEventListener('resize', handleResize); };
+    return () => { 
+      unsubscribe(); 
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', handleResize); 
+    };
   }, [imagesLoaded, images, frameIndex]);
 
   const section1Opacity = useTransform(smoothProgress, [0, 0.1, 0.2], [0, 1, 0]);
@@ -125,12 +135,12 @@ export default function HeroCanvasAnimation() {
 
       <div ref={containerRef} className="relative h-[800vh] w-full">
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#050505] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-        <motion.div style={{ y: yOffset }} className="w-full h-full opacity-60">
+        <motion.div style={{ y: yOffset }} className="w-full h-full opacity-85">
           <canvas ref={canvasRef} className="w-full h-full object-cover" />
         </motion.div>
         
         {/* Blending Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/20 to-[#050505] opacity-90 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/10 to-[#050505]/40 opacity-55 pointer-events-none" />
 
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <motion.div style={{ opacity: section1Opacity, x: section1X }} className="absolute w-full flex flex-col items-start justify-center text-left px-4 md:px-[5%] lg:px-[6%]">
