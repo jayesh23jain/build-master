@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
-import Sidebar from '@/components/Sidebar'; // Adjust path if needed
+import React, { useState } from 'react';
+import Sidebar from '@/components/Sidebar';
+import SubmitQuoteModal from '@/components/SubmitQuoteModal';
 
 // MOCK DATA
 const dashboardData = {
@@ -47,6 +48,8 @@ const dashboardData = {
 };
 
 export default function DashboardPage() {
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+
   return (
     // ROOT WRAPPER: Locks to screen height
     <div className="h-screen w-full bg-[#06090E] flex font-sans text-white overflow-hidden">
@@ -77,7 +80,7 @@ export default function DashboardPage() {
                 className="bg-[#0F1620] border border-[#1A2634] text-xs font-['JetBrains_Mono'] text-white px-8 py-2 w-48 focus:outline-none focus:border-[#00D9FF] transition-colors placeholder-[#3A4A5A]"
               />
             </div>
-            <button className="bg-[#00D9FF] hover:bg-[#00b3d6] text-[#06090E] text-[10px] font-bold font-['JetBrains_Mono'] px-4 py-2.5 tracking-widest transition-colors">
+            <button onClick={() => setIsQuoteModalOpen(true)} className="bg-[#00D9FF] hover:bg-[#00b3d6] text-[#06090E] text-[10px] font-bold font-['JetBrains_Mono'] px-4 py-2.5 tracking-widest transition-colors">
               + NEW REQUEST
             </button>
           </div>
@@ -322,6 +325,13 @@ export default function DashboardPage() {
 
         </main>
       </div>
+
+      {/* Submit Quote Modal */}
+      <SubmitQuoteModal 
+        isOpen={isQuoteModalOpen}
+        onClose={() => setIsQuoteModalOpen(false)}
+        phases={dashboardData.phases}
+      />
     </div>
   );
 }
