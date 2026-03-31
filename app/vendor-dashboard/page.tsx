@@ -11,6 +11,7 @@ import VendorActiveProjects from '@/components/vendor/pages/VendorActiveProjects
 import VendorEarnings from '@/components/vendor/pages/VendorEarnings';
 import VendorNotifications from '@/components/vendor/pages/VendorNotifications';
 import VendorProfile from '@/components/vendor/pages/VendorProfile';
+import VendorPortfolio from '@/components/vendor/VendorPortfolio';
 import VendorQuoteModal from '@/components/vendor/VendorQuoteModal';
 
 export default function VendorDashboard() {
@@ -34,6 +35,7 @@ export default function VendorDashboard() {
     requests: <VendorRequests onOpenModal={openQuoteModal} showToast={showToast} />,
     myquotes: <VendorMyQuotes onOpenModal={openQuoteModal} showToast={showToast} />,
     active: <VendorActiveProjects showToast={showToast} />,
+    portfolio: <VendorPortfolio showToast={showToast} />,
     earnings: <VendorEarnings showToast={showToast} />,
     notifications: <VendorNotifications showToast={showToast} />,
     profile: <VendorProfile showToast={showToast} />,

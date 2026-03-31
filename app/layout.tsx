@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Syne, Quintessential } from 'next/font/google';
 import './globals.css';
+import { AuthProvider } from '@/context/AuthContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,15 +25,17 @@ const quintessential = Quintessential({
 });
 
 export const metadata: Metadata = {
-  title: 'Build Master | Manage your entire build. One platform.',
-  description: 'The A-Z home builder platform. Connect with vendors, manage phases, and track your construction project.',
+  title: 'Structura | Construction Management Platform',
+  description: 'Connect with vendors, manage phases, and track your construction project.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${syne.variable} ${quintessential.variable}`}>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

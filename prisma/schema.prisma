@@ -1,0 +1,185 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============== USERS ==============
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  profileImage  String?
+  role          String     // "customer" or "vendor"
+  
+  // Remember Me
+  rememberMeToken String?
+  rememberMeExpiry DateTime?
+  
+  // Timestamps
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  customerProfile   CustomerProfile?
+  vendorProfile     VendorProfile?
+  
+  @@map("users")
+}
+
+// ============== CUSTOMER PROFILE ==============
+
+model CustomerProfile {
+  id            String     @id @default(cuid())
+  userId        String     @unique
+  phone         String?
+  location      String?
+  company       String?
+  address       String?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects      CustomerProject[]
+  
+  @@map("customer_profiles")
+}
+
+// ============== VENDOR PROFILE ==============
+
+model VendorProfile {
+  id            String     @id @default(cuid())
+  userId        String     @unique
+  trade         String     // "Structural Framing", "MEP", etc.
+  license       String     @unique
+  phone         String?
+  location      String?
+  bio           String?
+  experience    String?    // e.g., "15 years"
+  
+  // Ratings
+  rating        Float      @default(0)
+  reviews       Int        @default(0)
+  
+  // Portfolio
+  portfolioProjects  PortfolioProject[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quotes        Quote[]
+  
+  @@map("vendor_profiles")
+}
+
+// ============== PORTFOLIO PROJECTS ==============
+
+model PortfolioProject {
+  id            String     @id @default(cuid())
+  vendorId      String
+  title         String
+  description   String
+  images        String[]   // Array of image URLs/paths
+  category      String     // "residential", "commercial", etc.
+  budget        String     // e.g., "50L - 1Cr"
+  timeline      String     // e.g., "6 months"
+  status        String     // "completed", "in-progress", "planned"
+  
+  // Details
+  client        String?
+  location      String?
+  tags          String[]   // Skills/technologies
+  
+  // Dates
+  startDate     DateTime?
+  endDate       DateTime?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  vendor        VendorProfile @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  @@map("portfolio_projects")
+}
+
+// ============== CUSTOMER PROJECTS ==============
+
+model CustomerProject {
+  id            String     @id @default(cuid())
+  customerId    String
+  title         String
+  description   String?
+  address       String?
+  
+  // Project Details
+  phase         String     // "Planning", "Foundation", etc.
+  budget        String?
+  timeline      String?
+  status        String     // "planning", "active", "completed"
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  customer      CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  requests      VendorRequest[]
+  
+  @@map("customer_projects")
+}
+
+// ============== VENDOR REQUESTS ==============
+
+model VendorRequest {
+  id            String     @id @default(cuid())
+  projectId     String
+  phase         String     // Project phase
+  title         String
+  description   String?
+  budget        String?    // Budget range
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  project       CustomerProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  quotes        Quote[]
+  
+  @@map("vendor_requests")
+}
+
+// ============== QUOTES ==============
+
+model Quote {
+  id            String     @id @default(cuid())
+  requestId     String
+  vendorId      String
+  
+  amount        String
+  description   String?
+  timeline      String?
+  status        String     // "pending", "accepted", "rejected"
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  request       VendorRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  vendor        VendorProfile @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  @@unique([requestId, vendorId])
+  @@map("quotes")
+}

@@ -35,6 +35,7 @@ export default function VendorSidebar({ currentPage, setCurrentPage, showToast }
     { id: 'requests', label: 'Open Requests', icon: '◈', badge: { count: 6, color: 'purple' } },
     { id: 'myquotes', label: 'My Quotes', icon: '◫', badge: { count: 3, color: 'amber' } },
     { id: 'active', label: 'Active Projects', icon: '◉', badge: { count: 2, color: 'green' } },
+    { id: 'portfolio', label: 'Portfolio', icon: '◬', badge: null },
   ];
 
   const accountItems = [
