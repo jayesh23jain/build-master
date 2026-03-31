@@ -36,9 +36,9 @@ export default function Navbar() {
       {/* Center Links (Absolutely Centered) */}
       <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-10 pointer-events-auto">
         {['PHASES', 'FEATURES', 'PROCESS', 'GET STARTED'].map((item) => (
-          <a 
-            key={item} 
-            href="#" 
+          <a
+            key={item}
+            href="#"
             className="text-[#6B7280] hover:text-[#F4F6F8] text-[10px] font-bold uppercase tracking-[0.2em] font-['JetBrains_Mono'] transition-colors duration-300 relative group"
           >
             {item}
@@ -46,7 +46,7 @@ export default function Navbar() {
           </a>
         ))}
       </div>
-      
+
       {/* Right CTA Button Wrapper */}
       <div className="flex items-center justify-end pointer-events-auto w-auto md:w-[250px] gap-4">
         <div className="hidden md:block">
