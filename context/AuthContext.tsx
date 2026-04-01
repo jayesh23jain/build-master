@@ -14,6 +14,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (credentials: LoginRequest) => Promise<void>;
+  loginWithGoogle: (token: string, role?: string) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
   verifySession: () => Promise<void>;
@@ -77,6 +78,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!res.ok) {
         throw new Error(data.message || 'Login failed');
+      }
+
+      setUser(data.user);
+      setIsAuthenticated(true);
+
+      // Redirect based on role
+      setTimeout(() => {
+        window.location.href =
+          data.user.role === 'vendor'
+            ? '/vendor-dashboard'
+            : '/dashboard';
+      }, 100);
+    } catch (err: any) {
+      const message = err.message || 'An error occurred';
+      setError(message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithGoogle = async (token: string, role?: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, role }),
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Google login failed');
       }
 
       setUser(data.user);
@@ -182,6 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated,
         login,
+        loginWithGoogle,
         register,
         logout,
         verifySession,
