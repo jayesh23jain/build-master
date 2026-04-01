@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
 import VendorSidebar from '@/components/vendor/VendorSidebar';
 import VendorTopbar from '@/components/vendor/VendorTopbar';
 import VendorOverview from '@/components/vendor/pages/VendorOverview';
@@ -15,10 +16,31 @@ import VendorPortfolio from '@/components/vendor/VendorPortfolio';
 import VendorQuoteModal from '@/components/vendor/VendorQuoteModal';
 
 export default function VendorDashboard() {
+  const { user, logout } = useAuth();
+  const [vendorData, setVendorData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState('overview');
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [toast, setToast] = useState({ show: false, message: '' });
+
+  useEffect(() => {
+    async function fetchVendorData() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/vendor/stats');
+        const data = await res.json();
+        if (data.success) {
+          setVendorData(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch vendor data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchVendorData();
+  }, []);
 
   const showToast = (message: string) => {
     setToast({ show: true, message });
@@ -31,14 +53,14 @@ export default function VendorDashboard() {
   };
 
   const pages: { [key: string]: ReactNode } = {
-    overview: <VendorOverview onOpenModal={openQuoteModal} showToast={showToast} />,
-    requests: <VendorRequests onOpenModal={openQuoteModal} showToast={showToast} />,
-    myquotes: <VendorMyQuotes onOpenModal={openQuoteModal} showToast={showToast} />,
-    active: <VendorActiveProjects showToast={showToast} />,
-    portfolio: <VendorPortfolio showToast={showToast} />,
+    overview: <VendorOverview onOpenModal={openQuoteModal} showToast={showToast} data={vendorData} />,
+    requests: <VendorRequests onOpenModal={openQuoteModal} showToast={showToast} data={vendorData} />,
+    myquotes: <VendorMyQuotes onOpenModal={openQuoteModal} showToast={showToast} data={vendorData} />,
+    active: <VendorActiveProjects showToast={showToast} data={vendorData} />,
+    portfolio: <VendorPortfolio showToast={showToast} data={vendorData} />,
     earnings: <VendorEarnings showToast={showToast} />,
     notifications: <VendorNotifications showToast={showToast} />,
-    profile: <VendorProfile showToast={showToast} />,
+    profile: <VendorProfile showToast={showToast} user={user} />,
   };
 
   return (
@@ -57,7 +79,16 @@ export default function VendorDashboard() {
         <VendorTopbar currentPage={currentPage} showToast={showToast} onOpenModal={openQuoteModal} />
         
         <div style={{ padding: '2rem 2.5rem' }} className="content flex-1">
-          {pages[currentPage]}
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-10 h-10 border-2 border-[#a855f7] border-t-transparent animate-spin rounded-full"></div>
+                <div className="font-['JetBrains_Mono'] text-[.6rem] uppercase tracking-[0.2em] text-[#a855f7]">Syncing Vendor Ledger...</div>
+              </div>
+            </div>
+          ) : (
+            pages[currentPage]
+          )}
         </div>
       </main>
 

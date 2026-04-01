@@ -6,11 +6,12 @@ import type { PortfolioProject } from '@/lib/types';
 
 interface VendorPortfolioProps {
   showToast: (message: string) => void;
+  data?: any;
 }
 
-export default function VendorPortfolio({ showToast }: VendorPortfolioProps) {
-  const [projects, setProjects] = useState<PortfolioProject[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function VendorPortfolio({ showToast, data }: VendorPortfolioProps) {
+  const [projects, setProjects] = useState<PortfolioProject[]>(data?.portfolio || []);
+  const [isLoading, setIsLoading] = useState(!data?.portfolio);
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState<PortfolioProject | null>(
     null

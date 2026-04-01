@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         window.location.href =
           data.user.role === 'vendor'
             ? '/vendor-dashboard'
-            : '/customer-dashboard';
+            : '/dashboard';
       }, 100);
     } catch (err: any) {
       const message = err.message || 'An error occurred';

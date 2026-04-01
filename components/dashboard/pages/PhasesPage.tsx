@@ -2,7 +2,8 @@
 import { useEffect, useRef } from 'react';
 import { PROJECT } from '@/data/dashboardData';
 
-export default function PhasesPage({ onModal }: { onModal: () => void }) {
+export default function PhasesPage({ onModal, project }: { onModal: () => void; project: any }) {
+  const displayPhases = project?.requests || PROJECT.phases;
   const mounted = useRef(false);
   useEffect(() => {
     if (mounted.current) return;
@@ -23,8 +24,17 @@ export default function PhasesPage({ onModal }: { onModal: () => void }) {
 
   return (
     <div className="flex flex-col gap-4">
-      {PROJECT.phases.map((p, i) => (
-        <div key={p.num} className="phase-page-card" style={{ animationDelay: `${i * 0.08}s` }}>
+      {displayPhases.map((p: any, i: number) => {
+        const num = String(i + 1).padStart(2, '0');
+        const name = p.phase || p.name;
+        const color = p.color || '#22d3ee';
+        const status = p.status || 'open';
+        const pct = p.pct || (status === 'open' ? 0 : 100);
+        const cost = p.budget || p.cost || '₹Consulting';
+        const tags = p.tags || ['Structural', 'Concrete'];
+
+        return (
+          <div key={p.id || i} className="phase-page-card" style={{ animationDelay: `${i * 0.08}s` }}>
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--bdr)]">
             <div className="flex items-center gap-3">
@@ -35,13 +45,13 @@ export default function PhasesPage({ onModal }: { onModal: () => void }) {
               <span
                 className="font-['Syne',sans-serif] text-[1rem] font-[600] text-[var(--text)]"
               >
-                {p.num} — {p.name}
+                {num} — {name}
               </span>
             </div>
             <span
-              className={`font-['JetBrains_Mono',monospace] text-[0.48rem] uppercase tracking-[.12em] px-[.6rem] py-[.2rem] border ${statusStyle(p.status)}`}
+              className={`font-['JetBrains_Mono',monospace] text-[0.48rem] uppercase tracking-[.12em] px-[.6rem] py-[.2rem] border ${statusStyle(status)}`}
             >
-              {p.status}
+              {status}
             </span>
           </div>
 
@@ -51,19 +61,19 @@ export default function PhasesPage({ onModal }: { onModal: () => void }) {
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-[3px] bg-[var(--bdr)] overflow-hidden">
                 <div
-                  data-w={p.pct}
+                  data-w={pct}
                   className="h-full rounded-sm"
-                  style={{ width: '0%', background: p.color, transition: 'width 1.3s cubic-bezier(.16,1,.3,1)' }}
+                  style={{ width: '0%', background: color, transition: 'width 1.3s cubic-bezier(.16,1,.3,1)' }}
                 />
               </div>
               <span className="font-['JetBrains_Mono',monospace] text-[.5rem] text-[var(--muted-l)] shrink-0">
-                {p.pct}% complete
+                {pct}% complete
               </span>
             </div>
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-5">
-              {p.tags.map(t => (
+              {tags.map((t: string) => (
                 <span
                   key={t}
                   className="font-['JetBrains_Mono',monospace] text-[.45rem] uppercase tracking-[.1em] text-[var(--cyan)] bg-[rgba(34,211,238,.06)] border border-[rgba(34,211,238,.18)] px-[.5rem] py-[.18rem]"
@@ -80,7 +90,7 @@ export default function PhasesPage({ onModal }: { onModal: () => void }) {
                   Est. Cost
                 </div>
                 <div className="font-['Syne',sans-serif] text-[1rem] font-[600] text-[var(--text)]">
-                  {p.cost}
+                  {cost}
                 </div>
               </div>
               <button
@@ -90,9 +100,10 @@ export default function PhasesPage({ onModal }: { onModal: () => void }) {
                 Request Quote →
               </button>
             </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

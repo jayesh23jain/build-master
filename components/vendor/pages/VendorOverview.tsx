@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 interface VendorOverviewProps {
   onOpenModal: (reqId: string | null) => void;
   showToast: (message: string) => void;
+  data?: any;
 }
 
 const REQUESTS = [
@@ -134,8 +135,18 @@ function RequestCard({ request, compact = false, onBid }: any) {
   );
 }
 
-export default function VendorOverview({ onOpenModal, showToast }: VendorOverviewProps) {
+export default function VendorOverview({ onOpenModal, showToast, data }: VendorOverviewProps) {
   const [barWidths, setBarWidths] = useState<number[]>([]);
+
+  // Map dynamic data or use mocks
+  const displayRequests = data?.availableRequests || REQUESTS;
+  const displayQuotes = data?.activeQuotes || MY_QUOTES;
+  const displayStats = data?.stats || {
+    rating: 4.8,
+    reviews: 12,
+    activeQuotes: MY_QUOTES.length,
+    portfolioCount: 5
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -143,9 +154,9 @@ export default function VendorOverview({ onOpenModal, showToast }: VendorOvervie
     }, 100);
   }, []);
 
-  const accepted = MY_QUOTES.filter(q => q.status === 'accepted').length;
-  const pending = MY_QUOTES.filter(q => q.status === 'pending' || q.status === 'review').length;
-  const matched = REQUESTS.filter(r => r.matched).length;
+  const accepted = displayQuotes.filter((q:any) => q.status === 'accepted' || q.status === 'ACCEPTED').length;
+  const pending = displayQuotes.filter((q:any) => ['pending', 'review', 'PENDING', 'REVIEW'].includes(q.status)).length;
+  const matched = displayRequests.filter((r:any) => r.matched || true).length;
 
   const statusColors = {
     pending: 'text-[#f59e4a] border-[#f59e4a7f] bg-[#f59e4a0f]',
@@ -158,10 +169,10 @@ export default function VendorOverview({ onOpenModal, showToast }: VendorOvervie
     <div>
       {/* KPI Grid */}
       <motion.div style={{ marginBottom: '2rem' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-4 gap-px bg-[#1e2a3a] border border-[#1e2a3a] p-px mb-8">
-        <KpiCard label="Open Requests" value={REQUESTS.length} colorClass="text-[#a855f7]" delta={`${matched} match your trade`} dir="warn" dotColor="var(--v-accent)" />
-        <KpiCard label="Quotes Sent" value={MY_QUOTES.length} colorClass="text-[#f59e4a]" delta={`${pending} pending review`} dir="warn" dotColor="var(--amber)" />
+        <KpiCard label="Open Requests" value={displayRequests.length} colorClass="text-[#a855f7]" delta={`${matched} match your trade`} dir="warn" dotColor="var(--v-accent)" />
+        <KpiCard label="Quotes Sent" value={displayQuotes.length} colorClass="text-[#f59e4a]" delta={`${pending} pending review`} dir="warn" dotColor="var(--amber)" />
         <KpiCard label="Active Projects" value={ACTIVE_PROJECTS.length} colorClass="text-[#34d399]" delta="Across 2 sites" dir="neu" dotColor="var(--green)" />
-        <KpiCard label="This Month" value="₹14L" colorClass="text-[#a855f7]" delta="↑ 18% vs last month" dir="up" dotColor="var(--v-accent)" />
+        <KpiCard label="Vendor Rating" value={displayStats.rating || '4.8'} colorClass="text-[#a855f7]" delta={`${displayStats.reviews || 0} verified reviews`} dir="up" dotColor="var(--v-accent)" />
       </motion.div>
 
       {/* Main Grid */}
@@ -185,8 +196,23 @@ export default function VendorOverview({ onOpenModal, showToast }: VendorOvervie
           </div>
 
           <div style={{ padding: '1.5rem', gap: '.8rem' }} className="space-y-3">
-            {REQUESTS.filter(r => r.matched).map(req => (
-              <RequestCard key={req.id} request={req} compact={true} onBid={onOpenModal} />
+            {displayRequests.slice(0, 3).map((req: any) => (
+              <RequestCard 
+                key={req.id} 
+                request={{
+                  ...req,
+                  matched: true,
+                  title: req.title || req.phase,
+                  project: req.project?.title || req.project || 'Unknown Project',
+                  desc: req.description || req.desc,
+                  budget: req.budget || 'Consult Client',
+                  posted: 'Just now',
+                  bids: req.quotes?.length || 0,
+                  tags: req.tags || ['Structural', 'Urgent']
+                }} 
+                compact={true} 
+                onBid={onOpenModal} 
+              />
             ))}
           </div>
         </motion.div>
@@ -319,16 +345,16 @@ export default function VendorOverview({ onOpenModal, showToast }: VendorOvervie
                 </tr>
               </thead>
               <tbody>
-                {MY_QUOTES.slice(0, 4).map((quote, i) => (
+                {displayQuotes.slice(0, 4).map((quote: any, i: number) => (
                   <tr key={i} className="border-b border-[#0d0f144d] hover:bg-[#161c28] cursor-pointer transition-all">
                     <td className="px-6 py-4 text-[#e2eef5] font-semibold">
-                      {quote.project}
-                      <div className="font-['JetBrains_Mono'] text-xs uppercase tracking-widest text-[#4a6070] mt-1">{quote.phase}</div>
+                      {quote.project?.title || quote.project || 'Project'}
+                      <div className="font-['JetBrains_Mono'] text-xs uppercase tracking-widest text-[#4a6070] mt-1">{quote.request?.phase || quote.phase}</div>
                     </td>
-                    <td className="px-6 py-4 font-['Syne'] font-bold text-[#e2eef5]">{quote.price}</td>
-                    <td className="px-6 py-4 font-['JetBrains_Mono'] text-xs text-[#4a6070]">{quote.date}</td>
+                    <td className="px-6 py-4 font-['Syne'] font-bold text-[#e2eef5]">₹{(quote.amount / 100000).toFixed(1)}L</td>
+                    <td className="px-6 py-4 font-['JetBrains_Mono'] text-xs text-[#4a6070]">{new Date(quote.createdAt || Date.now()).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
-                      <span className={`font-['JetBrains_Mono'] text-xs uppercase tracking-widest px-3 py-1.5 border rounded ${statusColors[quote.status as keyof typeof statusColors]}`}>
+                      <span className={`font-['JetBrains_Mono'] text-xs uppercase tracking-widest px-3 py-1.5 border rounded ${statusColors[(quote.status?.toLowerCase() as keyof typeof statusColors) || 'pending']}`}>
                         {quote.status}
                       </span>
                     </td>

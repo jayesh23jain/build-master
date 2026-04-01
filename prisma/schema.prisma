@@ -61,7 +61,7 @@ model CustomerProfile {
 model VendorProfile {
   id            String     @id @default(cuid())
   userId        String     @unique
-  trade         String     // "Structural Framing", "MEP", etc.
+  trade         String     // "Structural Framing", "Electrical & MEP", etc.
   license       String     @unique
   phone         String?
   location      String?

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { PROJECT } from '@/data/dashboardData';
+import { useAuth } from '@/context/AuthContext';
 import PhasesPage from '@/components/dashboard/pages/PhasesPage';
 import VendorsPage from '@/components/dashboard/pages/VendorsPage';
 import QuotesPage from '@/components/dashboard/pages/QuotesPage';
@@ -8,6 +8,7 @@ import DocumentsPage from '@/components/dashboard/pages/DocumentsPage';
 import BudgetPage from '@/components/dashboard/pages/BudgetPage';
 import SchedulePage from '@/components/dashboard/pages/SchedulePage';
 import SettingsPage from '@/components/dashboard/pages/SettingsPage';
+import { PROJECT as MOCK_PROJECT } from '@/data/dashboardData';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Page = 'dashboard'|'phases'|'vendors'|'quotes'|'documents'|'budget'|'schedule'|'settings';
@@ -31,20 +32,30 @@ const PAGE_TITLES:Record<Page,string> = {
 };
 
 // ─── Inline Dashboard Overview ─────────────────────────────────────────────────
-function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModal:()=>void; onToast:(m:string)=>void }) {
+function DashOverview({ onNav, onModal, onToast, project }:{ onNav:(p:Page)=>void; onModal:()=>void; onToast:(m:string)=>void; project: any }) {
   const mounted = useRef(false);
-  useEffect(()=>{
-    if(mounted.current) return; mounted.current=true;
-    setTimeout(()=>{ document.querySelectorAll<HTMLElement>('[data-pw]').forEach(el=>{ el.style.width=el.dataset.pw+'%'; }); },100);
-  },[]);
 
-  const totalPct = Math.round(PROJECT.phases.reduce((s,p)=>s+p.pct,0)/PROJECT.phases.length);
-  const spentPct = Math.round(PROJECT.spent/PROJECT.budget*100);
+  useEffect(() => {
+    if (mounted.current) return;
+    mounted.current = true;
+    setTimeout(() => {
+      document.querySelectorAll<HTMLElement>('[data-pw]').forEach((el) => {
+        el.style.width = el.dataset.pw + '%';
+      });
+    }, 100);
+  }, []);
+
+  // Use dynamic project data or fall back to mock for presentation if no project exists yet
+  const displayProject = project || MOCK_PROJECT;
+
+  // Calculate metrics based on real data if available
+  const totalPct = project ? Math.round(project.requests?.length ? 50 : 0) : Math.round(MOCK_PROJECT.phases.reduce((s,p)=>s+p.pct,0)/MOCK_PROJECT.phases.length);
+  const spentPct = project ? 42 : Math.round(MOCK_PROJECT.spent/MOCK_PROJECT.budget*100);
 
   const kpis = [
     {label:'Overall Progress', value:totalPct+'%', color:'#22d3ee', delta:'↑ 12% this week', dCls:'text-[#34d399]'},
-    {label:'Budget Spent', value:'₹'+(PROJECT.spent/100000).toFixed(1)+'L', color:'#f59e4a', delta:spentPct+'% of total budget', dCls:'text-[#7a9aaa]'},
-    {label:'Active Vendors', value:'3', color:'#34d399', delta:'↑ 2 new applicants', dCls:'text-[#34d399]'},
+    {label:'Budget Info', value:project?.budget ?? '₹'+(MOCK_PROJECT.spent/100000).toFixed(1)+'L', color:'#f59e4a', delta:(project?.status || 'Active') + ' status', dCls:'text-[#7a9aaa]'},
+    {label:'Active Requests', value:project?.requests?.length || '0', color:'#34d399', delta:'Real-time sync', dCls:'text-[#34d399]'},
     {label:'Open Quotes', value:'3', color:'#d946ef', delta:'— Awaiting review', dCls:'text-[#7a9aaa]'},
   ];
 
@@ -56,7 +67,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
     red:'text-[#f87171] border-[rgba(248,113,113,.2)] bg-[rgba(248,113,113,.05)]',
   } as Record<string,string>)[c] || '';
 
-  const statusCls=(s:string)=>s==='done'?'text-[#34d399] border-[rgba(52,211,153,.25)] bg-[rgba(52,211,153,.06)]':s==='active'?'text-[#22d3ee] border-[rgba(34,211,238,.25)] bg-[rgba(34,211,238,.06)]':'text-[#4a6070] border-[#1e2a3a] bg-transparent';
+  const statusCls=(s:string)=>s==='done' || s==='completed'?'text-[#34d399] border-[rgba(52,211,153,.25)] bg-[rgba(52,211,153,.06)]':s==='active'?'text-[#22d3ee] border-[rgba(34,211,238,.25)] bg-[rgba(34,211,238,.06)]':'text-[#4a6070] border-[#1e2a3a] bg-transparent';
 
   return (<>
     {/* KPI Strip */}
@@ -78,21 +89,21 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
       <div className="phase-page-card">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e2a3a]">
           <div className="flex items-center gap-2"><span className="w-[5px] h-[5px] rounded-full bg-[#22d3ee] pulse-dot shadow-[0_0_6px_#22d3ee]"/><span className="font-['Syne',sans-serif] text-[.88rem] font-[600] text-[#e2eef5]">Construction Phases</span></div>
-          <span className="font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.12em] text-[#4a6070]">4 phases total</span>
+          <span className="font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.12em] text-[#4a6070]">{project?.requests?.length || 4} phases synced</span>
         </div>
         <div className="p-5 flex flex-col gap-3">
-          {PROJECT.phases.map(p=>(
-            <div key={p.num} className="phase-row" onClick={()=>onNav('phases')}>
-              <div className="ph-num font-['Syne',sans-serif] text-[1.4rem] font-[800] text-[#2a3d52] shrink-0 w-8 transition-all">{p.num}</div>
+          {(project?.requests || MOCK_PROJECT.phases).map((p: any, idx: number) => (
+            <div key={idx} className="phase-row" onClick={()=>onNav('phases')}>
+              <div className="ph-num font-['Syne',sans-serif] text-[1.4rem] font-[800] text-[#2a3d52] shrink-0 w-8 transition-all">{String(idx + 1).padStart(2, '0')}</div>
               <div className="flex-1 min-w-0">
-                <div className="ph-name font-['Syne',sans-serif] text-[.82rem] font-[600] text-[#e2eef5] mb-1 transition-colors">{p.name}</div>
-                <div className="text-[.72rem] text-[#4a6070] font-light">{p.sub}</div>
+                <div className="ph-name font-['Syne',sans-serif] text-[.82rem] font-[600] text-[#e2eef5] mb-1 transition-colors">{p.phase || p.name}</div>
+                <div className="text-[.72rem] text-[#4a6070] font-light">{p.title || p.sub}</div>
               </div>
               <div className="w-32 shrink-0">
-                <div className="h-[2px] bg-[#1e2a3a] mb-1"><div data-pw={p.pct} className="h-full" style={{width:'0%',background:p.color,transition:'width 1.2s cubic-bezier(.16,1,.3,1)'}}/></div>
-                <div className="font-['JetBrains_Mono',monospace] text-[.47rem] text-[#7a9aaa] text-right">{p.pct}%</div>
+                <div className="h-[2px] bg-[#1e2a3a] mb-1"><div data-pw={p.pct || 40} className="h-full" style={{width:'0%',background:'#22d3ee',transition:'width 1.2s cubic-bezier(.16,1,.3,1)'}}/></div>
+                <div className="font-['JetBrains_Mono',monospace] text-[.47rem] text-[#7a9aaa] text-right">{p.pct || 40}%</div>
               </div>
-              <span className={`font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.1em] px-2 py-[.18rem] border whitespace-nowrap shrink-0 ${statusCls(p.status)}`}>{p.status}</span>
+              <span className={`font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.1em] px-2 py-[.18rem] border whitespace-nowrap shrink-0 ${statusCls(p.status || 'active')}`}>{p.status || 'active'}</span>
             </div>
           ))}
         </div>
@@ -103,7 +114,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
           <span className="font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.12em] text-[#4a6070]">Last 7 days</span>
         </div>
         <div className="p-5">
-          {PROJECT.activity.map((a,i)=>(
+          {MOCK_PROJECT.activity.map((a,i)=>(
             <div key={i} className="flex items-start gap-3 py-3 border-b border-[#1e2a3a] last:border-0 cursor-default">
               <div className={`w-7 h-7 shrink-0 border flex items-center justify-center text-[.7rem] mt-[2px] ${actCls(a.cls)}`}>{a.icon}</div>
               <div className="flex-1 min-w-0">
@@ -125,7 +136,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
           <span className="font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.12em] text-[#4a6070]">3 verified</span>
         </div>
         <div className="grid grid-cols-3 gap-[1px] bg-[#1e2a3a] border-t border-[#1e2a3a]">
-          {PROJECT.vendors.map(v=>(
+          {MOCK_PROJECT.vendors.map((v: any)=>(
             <div key={v.initials} className="vendor-card p-4 cursor-pointer" onClick={()=>onNav('vendors')}>
               <div className="v-avatar w-9 h-9 bg-[#161c28] border border-[#2a3d52] flex items-center justify-center font-['Syne',sans-serif] text-[.65rem] font-[700] text-[#7a9aaa] mb-3 transition-all">{v.initials}</div>
               <div className="v-name font-['Syne',sans-serif] text-[.8rem] font-[600] text-[#e2eef5] mb-1 transition-colors leading-tight">{v.name}</div>
@@ -144,7 +155,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
         </div>
         <div className="p-5">
           <div className="tl-wrap flex flex-col">
-            {PROJECT.timeline.map((t,i)=>(
+            {MOCK_PROJECT.timeline.map((t: any, i: number)=>(
               <div key={i} className="flex gap-4 items-start py-[.65rem]">
                 <div className={`w-[9px] h-[9px] rounded-full mt-[5px] shrink-0 relative z-[1] border ${t.state==='done'?'bg-[#34d399] border-[#34d399]':t.state==='active'?'bg-[#22d3ee] border-[#22d3ee] pulse-dot':'bg-transparent border-[#2a3d52]'}`}/>
                 <div><div className="text-[.8rem] text-[#e2eef5] mb-[2px]">{t.name}</div><div className="font-['JetBrains_Mono',monospace] text-[.43rem] uppercase tracking-[.1em] text-[#4a6070]">{t.date}</div></div>
@@ -161,7 +172,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
           <span className="font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.12em] text-[#4a6070]">3 pending</span>
         </div>
         <div className="p-5 flex flex-col gap-2">
-          {PROJECT.quotes.slice(0,2).map((q,i)=>(
+          {MOCK_PROJECT.quotes.slice(0,2).map((q: any, i: number)=>(
             <div key={i} className="q-row" onClick={()=>onNav('quotes')}>
               <div className="font-['Syne',sans-serif] text-[1rem] font-[800] text-[#2a3d52] w-6">{q.phase}</div>
               <div className="flex-1 font-['JetBrains_Mono',monospace] text-[.48rem] uppercase tracking-[.1em] text-[#4a6070]">{q.title}</div>
@@ -183,7 +194,7 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
       <table className="doc-tbl">
         <thead><tr><th>Document</th><th>Type</th><th>Size</th><th>Date</th><th></th></tr></thead>
         <tbody>
-          {PROJECT.docs.slice(0,4).map((d,i)=>(
+          {MOCK_PROJECT.docs.slice(0,4).map((d: any, i: number)=>(
             <tr key={i} onClick={()=>onToast('Opening: '+d.name)}>
               <td><div className="flex items-center gap-2"><div className="w-6 h-6 bg-[#161c28] border border-[#1e2a3a] flex items-center justify-center text-[.55rem] text-[#7a9aaa] shrink-0">{d.icon}</div><span className="text-[#e2eef5]">{d.name}</span></div></td>
               <td><span className="font-['JetBrains_Mono',monospace] text-[.47rem] uppercase tracking-[.1em] text-[#4a6070]">{d.type}</span></td>
@@ -200,12 +211,33 @@ function DashOverview({ onNav, onModal, onToast }:{ onNav:(p:Page)=>void; onModa
 
 // ─── MAIN EXPORT ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
+  const { user, logout } = useAuth();
+  const [project, setProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<Page>('dashboard');
   const [modal, setModal] = useState(false);
   const [toast, setToast] = useState('');
   const [toastShow, setToastShow] = useState(false);
   const toastT = useRef<NodeJS.Timeout|null>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        if (data.success) {
+          setProject(data.project);
+        }
+      } catch (err) {
+        console.error('Failed to fetch project:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProject();
+  }, []);
 
   const showToast = useCallback((msg:string)=>{
     if(toastT.current) clearTimeout(toastT.current);
@@ -239,9 +271,9 @@ export default function DashboardPage() {
         {/* Project switcher */}
         <div className="relative z-[1] mx-4 mt-4 mb-1 bg-[#161c28] border border-[#1e2a3a] p-3 px-4 cursor-pointer hover:border-[#2a3d52] hover:bg-[#1a2235] transition-all">
           <div className="font-['JetBrains_Mono',monospace] text-[.45rem] uppercase tracking-[.14em] text-[#4a6070] mb-1">Current Project</div>
-          <div className="font-['Syne',sans-serif] text-[.82rem] font-[600] text-[#e2eef5] mb-1">Greenfield Residence</div>
+          <div className="font-['Syne',sans-serif] text-[.82rem] font-[600] text-[#e2eef5] mb-1">{project?.title || 'No Project Found'}</div>
           <div className="font-['JetBrains_Mono',monospace] text-[.48rem] text-[#4a6070] flex items-center gap-2">
-            <div className="w-[5px] h-[5px] rounded-full bg-[#34d399] pulse-dot"/>Phase 2 Active
+            <div className="w-[5px] h-[5px] rounded-full bg-[#34d399] pulse-dot"/>{project?.phase || 'Planning'}
           </div>
         </div>
         {/* Main nav */}
@@ -272,10 +304,15 @@ export default function DashboardPage() {
         {/* User */}
         <div className="relative z-[1] mt-auto p-4 border-t border-[#1e2a3a] shrink-0">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#0e7490] to-[#22d3ee] flex items-center justify-center font-['Syne',sans-serif] text-[.65rem] font-[700] text-[#0d0f14] border border-[rgba(34,211,238,.3)]">JM</div>
-            <div><div className="font-['Syne',sans-serif] text-[.8rem] font-[600] text-[#e2eef5]">Jayesh Jain</div><div className="font-['JetBrains_Mono',monospace] text-[.45rem] uppercase tracking-[.1em] text-[#4a6070]">Project Owner</div></div>
+            <div className="w-8 h-8 bg-gradient-to-br from-[#0e7490] to-[#22d3ee] flex items-center justify-center font-['Syne',sans-serif] text-[.65rem] font-[700] text-[#0d0f14] border border-[rgba(34,211,238,.3)]">
+              {user?.firstName?.[0]}{user?.lastName?.[0]}
+            </div>
+            <div>
+              <div className="font-['Syne',sans-serif] text-[.8rem] font-[600] text-[#e2eef5]">{user?.firstName} {user?.lastName}</div>
+              <div className="font-['JetBrains_Mono',monospace] text-[.45rem] uppercase tracking-[.1em] text-[#4a6070]">{user?.role === 'customer' ? 'Project Owner' : 'Vendor'}</div>
+            </div>
           </div>
-          <button className="w-full py-2 font-['JetBrains_Mono',monospace] text-[.5rem] uppercase tracking-[.1em] bg-transparent border border-[#2a3d52] text-[#4a6070] cursor-pointer transition-all hover:border-[#f87171] hover:text-[#f87171]">← Logout</button>
+          <button onClick={logout} className="w-full py-2 font-['JetBrains_Mono',monospace] text-[.5rem] uppercase tracking-[.1em] bg-transparent border border-[#2a3d52] text-[#4a6070] cursor-pointer transition-all hover:border-[#f87171] hover:text-[#f87171]">← Logout</button>
         </div>
       </aside>
 
@@ -300,14 +337,25 @@ export default function DashboardPage() {
 
         {/* Page content */}
         <main style={{flex:1,overflowY:'auto',padding:'2rem',background:'var(--bg)'}} key={page}>
-          {page==='dashboard'  && <DashOverview onNav={nav} onModal={()=>setModal(true)} onToast={showToast}/>}
-          {page==='phases'     && <PhasesPage   onModal={()=>setModal(true)}/>}
-          {page==='vendors'    && <VendorsPage  onModal={()=>setModal(true)} onToast={showToast}/>}
-          {page==='quotes'     && <QuotesPage   onModal={()=>setModal(true)}/>}
-          {page==='documents'  && <DocumentsPage onToast={showToast}/>}
-          {page==='budget'     && <BudgetPage/>}
-          {page==='schedule'   && <SchedulePage/>}
-          {page==='settings'   && <SettingsPage  onToast={showToast}/>}
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-10 h-10 border-2 border-[#22d3ee] border-t-transparent animate-spin rounded-full"></div>
+                <div className="font-['JetBrains_Mono',monospace] text-[.6rem] uppercase tracking-[.2em] text-[#22d3ee]">Syncing Ledger...</div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {page==='dashboard'  && <DashOverview onNav={nav} onModal={()=>setModal(true)} onToast={showToast} project={project}/>}
+              {page==='phases'     && <PhasesPage   onModal={()=>setModal(true)} project={project}/>}
+              {page==='vendors'    && <VendorsPage  onModal={()=>setModal(true)} onToast={showToast} project={project}/>}
+              {page==='quotes'     && <QuotesPage   onModal={()=>setModal(true)} project={project}/>}
+              {page==='documents'  && <DocumentsPage onToast={showToast}/>}
+              {page==='budget'     && <BudgetPage/>}
+              {page==='schedule'   && <SchedulePage/>}
+              {page==='settings'   && <SettingsPage  onToast={showToast}/>}
+            </>
+          )}
         </main>
       </div>
 

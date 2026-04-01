@@ -3,8 +3,9 @@
 import { motion } from 'framer-motion';
 
 interface VendorRequestsProps {
-  onOpenModal: (reqId: string) => void;
+  onOpenModal: (reqId: string | null) => void;
   showToast: (message: string) => void;
+  data?: any;
 }
 
 const REQUESTS = [
@@ -112,9 +113,10 @@ function RequestCard({ request, onBid }: any) {
   );
 }
 
-export default function VendorRequests({ onOpenModal, showToast }: VendorRequestsProps) {
-  const matchedFirst = [...REQUESTS].sort((a, b) => (b.matched ? 1 : 0) - (a.matched ? 1 : 0));
-  const matched = REQUESTS.filter(r => r.matched).length;
+export default function VendorRequests({ onOpenModal, showToast, data }: VendorRequestsProps) {
+  const displayRequests = data?.availableRequests || REQUESTS;
+  const matchedFirst = [...displayRequests].sort((a: any, b: any) => ((b.matched || true) ? 1 : 0) - ((a.matched || true) ? 1 : 0));
+  const matched = displayRequests.filter((r: any) => r.matched || true).length;
 
   return (
     <div>
@@ -131,8 +133,22 @@ export default function VendorRequests({ onOpenModal, showToast }: VendorRequest
       </div>
 
       <div className="space-y-3">
-        {matchedFirst.map((request) => (
-          <RequestCard key={request.id} request={request} onBid={onOpenModal} />
+        {matchedFirst.map((request: any) => (
+          <RequestCard 
+            key={request.id} 
+            request={{
+              ...request,
+              matched: true,
+              title: request.title || request.phase,
+              project: request.project?.title || request.project || 'Unknown Project',
+              desc: request.description || request.desc,
+              budget: request.budget || 'Consult Client',
+              posted: 'Just now',
+              bids: request.quotes?.length || 0,
+              tags: request.tags || ['Structural', 'Urgent']
+            }} 
+            onBid={onOpenModal} 
+          />
         ))}
       </div>
     </div>

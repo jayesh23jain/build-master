@@ -176,7 +176,7 @@ Structura/
 │   ├── vendor-dashboard/
 │   │   ├── page.tsx                 ← Main dashboard
 │   │   └── profile/page.tsx         ← Profile page
-│   ├── customer-dashboard/
+│   ├── dashboard/
 │   │   └── page.tsx                 ← Customer dashboard
 │   └── layout.tsx                   ← Root layout (AuthProvider)
 │
@@ -226,8 +226,8 @@ Structura/
 - `/vendor-dashboard/profile` - Edit profile
 
 ### Customer Routes (Protected)
-- `/customer-dashboard` - Main dashboard
-- `/customer-dashboard/profile` - Edit profile
+- `/dashboard` - Main dashboard
+- `/dashboard/profile` - Edit profile
 
 ---
 

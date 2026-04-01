@@ -1,8 +1,9 @@
 'use client';
 
 interface VendorMyQuotesProps {
-  onOpenModal: (projectName: string) => void;
+  onOpenModal: (projectName: string | null) => void;
   showToast: (message: string) => void;
+  data?: any;
 }
 
 const MY_QUOTES = [
@@ -20,7 +21,8 @@ const statusColors = {
   review: 'text-[#a855f7] border-[#a855f77f] bg-[#a855f70f]',
 };
 
-export default function VendorMyQuotes({ onOpenModal, showToast }: VendorMyQuotesProps) {
+export default function VendorMyQuotes({ onOpenModal, showToast, data }: VendorMyQuotesProps) {
+  const displayQuotes = data?.activeQuotes || MY_QUOTES;
   return (
     <div className="bg-[#111520] border border-[#1e2a3a] relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
@@ -52,22 +54,26 @@ export default function VendorMyQuotes({ onOpenModal, showToast }: VendorMyQuote
             </tr>
           </thead>
           <tbody>
-            {MY_QUOTES.map((quote, i) => (
+            {displayQuotes.map((quote: any, i: number) => (
               <tr key={i} className="border-b border-[#0d0f144d] hover:bg-[#161c28] cursor-pointer transition-all">
-                <td className="px-6 py-4 text-[#e2eef5] font-['Syne'] font-semibold">{quote.project}</td>
+                <td className="px-6 py-4 text-[#e2eef5] font-['Syne'] font-semibold">{quote.project?.title || quote.project || 'Project'}</td>
                 <td className="px-6 py-4">
-                  <div className="font-['JetBrains_Mono'] text-xs uppercase tracking-widest text-[#4a6070]">{quote.phase}</div>
+                  <div className="font-['JetBrains_Mono'] text-xs uppercase tracking-widest text-[#4a6070]">{quote.request?.phase || quote.phase}</div>
                 </td>
-                <td className="px-6 py-4 font-['Syne'] font-bold text-[#e2eef5]">{quote.price}</td>
-                <td className="px-6 py-4 font-['JetBrains_Mono'] text-xs text-[#4a6070]">{quote.date}</td>
+                <td className="px-6 py-4 font-['Syne'] font-bold text-[#e2eef5]">
+                  {typeof quote.amount === 'number' ? `₹${(quote.amount / 100000).toFixed(1)}L` : quote.price}
+                </td>
+                <td className="px-6 py-4 font-['JetBrains_Mono'] text-xs text-[#4a6070]">
+                  {quote.createdAt ? new Date(quote.createdAt).toLocaleDateString() : quote.date}
+                </td>
                 <td className="px-6 py-4">
-                  <span className={`font-['JetBrains_Mono'] text-xs uppercase tracking-widest px-3 py-2 border rounded ${statusColors[quote.status as keyof typeof statusColors]}`}>
+                  <span className={`font-['JetBrains_Mono'] text-xs uppercase tracking-widest px-3 py-2 border rounded ${statusColors[(quote.status?.toLowerCase() as keyof typeof statusColors) || 'pending']}`}>
                     {quote.status}
                   </span>
                 </td>
                 <td className="px-6 py-4">
                   <button
-                    onClick={() => onOpenModal(quote.project)}
+                    onClick={() => onOpenModal(quote.project?.title || quote.project)}
                     className="px-4 py-2 font-['JetBrains_Mono'] text-xs uppercase tracking-widest bg-transparent border border-[#2a3d52] text-[#7a9aaa] cursor-pointer transition-all hover:border-[#a855f7] hover:text-[#a855f7]"
                   >
                     Revise

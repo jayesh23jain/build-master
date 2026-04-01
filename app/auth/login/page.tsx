@@ -1,14 +1,17 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import FeatureAnimation from '@/components/FeatureAnimation';
+import { useAuth } from '@/context/AuthContext';
 
 type UserType = 'customer' | 'vendor' | null;
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { login, register, error, clearError, isLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const [success, setSuccess] = useState('');
   const [userType, setUserType] = useState<UserType>(null);
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -23,19 +26,42 @@ export default function LoginPage() {
     rememberMe: false,
     agreeTerms: false,
   });
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('registered')) {
+      setSuccess('Registration successful! Please login.');
+      setIsLogin(true);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (userType === 'customer') {
-        router.push('/dashboard');
+    clearError();
+    setSuccess('');
+
+    try {
+      if (isLogin) {
+        await login({
+          email: formData.email,
+          password: formData.password,
+          role: userType as 'customer' | 'vendor',
+          rememberMe: formData.rememberMe,
+        });
       } else {
-        router.push('/vendor-dashboard');
+        await register({
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          role: userType as 'customer' | 'vendor',
+          trade: formData.trade,
+          license: formData.license,
+        });
       }
-    }, 1500);
+    } catch (err) {
+      console.error('Auth error:', err);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -213,6 +239,26 @@ export default function LoginPage() {
                   </p>
                 </div>
 
+                {/* Status Messages */}
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded text-red-500 text-sm font-['JetBrains_Mono']"
+                  >
+                    ❌ {error}
+                  </motion.div>
+                )}
+                {success && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mb-6 p-4 bg-green-500/10 border border-green-500/50 rounded text-green-500 text-sm font-['JetBrains_Mono']"
+                  >
+                    ✅ {success}
+                  </motion.div>
+                )}
+
                 {/* Forms */}
                 <form onSubmit={handleSubmit} className="space-y-5 mb-8">
                   {/* Register Fields */}
@@ -341,11 +387,13 @@ export default function LoginPage() {
                           required
                         >
                           <option value="" disabled className="bg-[#0d0f14]">Select your trade</option>
-                          <option value="plumbing" className="bg-[#0d0f14]">Plumbing</option>
-                          <option value="electrical" className="bg-[#0d0f14]">Electrical</option>
-                          <option value="carpentry" className="bg-[#0d0f14]">Carpentry</option>
-                          <option value="masonry" className="bg-[#0d0f14]">Masonry</option>
-                          <option value="painting" className="bg-[#0d0f14]">Painting</option>
+                          <option value="Structural Framing" className="bg-[#0d0f14]">Structural Framing</option>
+                          <option value="Foundation & Excavation" className="bg-[#0d0f14]">Foundation & Excavation</option>
+                          <option value="Electrical & MEP" className="bg-[#0d0f14]">Electrical & MEP</option>
+                          <option value="Interiors & Woodwork" className="bg-[#0d0f14]">Interiors & Woodwork</option>
+                          <option value="General Contractor" className="bg-[#0d0f14]">General Contractor</option>
+                          <option value="Roofing" className="bg-[#0d0f14]">Roofing</option>
+                          <option value="Architecture & Design" className="bg-[#0d0f14]">Architecture & Design</option>
                         </select>
                       </div>
 
@@ -408,14 +456,14 @@ export default function LoginPage() {
                   {/* Submit Button */}
                   <motion.button
                     type="submit"
-                    disabled={loading || (!isLogin && !formData.agreeTerms)}
+                    disabled={isLoading || (!isLogin && !formData.agreeTerms)}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     className={`w-full px-6 py-4 font-bold uppercase tracking-[0.2em] rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-['JetBrains_Mono'] ${getButtonColor()} ${userType === 'vendor' ? 'text-[#F4F6F8]' : 'text-[#050505]'} text-lg`}
                   >
-                    {loading ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In →' : 'Create Account →')}
+                    {isLoading ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In →' : 'Create Account →')}
                   </motion.button>
                 </form>
 
